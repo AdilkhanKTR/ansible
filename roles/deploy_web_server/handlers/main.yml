@@ -1,0 +1,16 @@
+---
+- name: Restart Apache
+  service: 
+    name: httpd 
+    state: restarted
+- name: Restart Apache Debian
+  service: 
+    name: apache2 
+    state: restarted
+- name: Restart PostgreSQL
+  service:
+    name: postgresql-12
+    state: restarted
+- name: Restart Firewalld
+  command: firewall-cmd --reload
+  ignore_errors: yes

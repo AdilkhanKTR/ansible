@@ -1,0 +1,63 @@
+---
+
+- name: MAIN | Install epel-release
+  yum: 
+     name: "{{ packages }}"
+     state: present
+  vars:
+     packages:
+       - epel-release
+       - yum-utils
+
+- name: MAIN | Install python36 rpm
+  yum:
+    name: https://repo.ius.io/ius-release-el7.rpm
+    state: present
+    update_cache: yes
+    validate_certs: no
+    disable_gpg_check: yes
+  
+- name: MAIN | Install basic packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    disable_gpg_check: yes
+    validate_certs: no
+    update_cache: yes
+  vars:
+    packages:
+      - gcc
+      - python36u
+      - python36u-devel
+      - python36u-setuptools
+      - python36u-pip
+      - libxml2-devel
+      - libxslt-devel
+      - libffi-devel
+      - graphviz
+      - openssl-devel
+      - redhat-rpm-config
+      - redis
+      - python-psycopg2
+
+- name: Include Web Server 
+  include: web-server.yml
+
+- name: Include PostgreSQL task
+  include: postgresql.yml 
+
+- name: Include Zabbix task
+  include: zabbix-server.yml
+
+- name: FIREWALL | Open ports
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+  notify: Restart Firewalld
+  ignore_errors: yes
+  loop:
+    - https
+    - http
+    - zabbix-agent
+    - zabbix-server

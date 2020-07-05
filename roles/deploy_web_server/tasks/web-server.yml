@@ -1,0 +1,25 @@
+---
+- block: #Block For RedHat
+#  - name: WEB-SERVER | uninstall yum-config
+#    command: yum-config-manager --save --setopt=pgdg13-updates-debuginfo.skip_if_unavailable=true
+
+  - name: WEB-SERVER | WEB-Install Apache Web Server for RedHat
+    yum: name=httpd state=latest
+  
+  - name: WEB-SERVER | Start Web server and enable for Redhat
+    service: name=httpd state=started enabled=yes
+  
+  when: ansible_os_family == "RedHat"
+  
+  # Для изменения номера прослушиваемого порта
+  #- name: change listen port
+  #  lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen 80" line="Listen 8090" state=present   
+  
+#- block: #Block For Deiban
+#  - name: Start Web server and enable for Debian
+#    service: name=apache2 state=started enabled=yes
+
+#  - name: Install Apache Web Server for Debian
+#    apt: name=apache2 state=latest
+#  when: ansible_os_family == "Debian"
+    

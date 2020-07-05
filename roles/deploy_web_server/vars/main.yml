@@ -1,0 +1,9 @@
+---
+# vars file for deploy_web_server
+db_user: zabbix
+db_pass: zabbix
+working_rpm: https://repo.ius.io/ius-release-el7.rpm
+dst_dir: /var/www/html
+zabbix_repo_folder: /etc/yum.repos.d/
+php_timezone: /etc/opt/rh/rh-php72/php-fpm.d/
+zabbix_server_folder: /etc/zabbix/

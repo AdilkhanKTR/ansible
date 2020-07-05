@@ -1,0 +1,77 @@
+---
+
+- name: POSTGRESQL | Download PostgreSQL repo
+  yum:
+     disable_gpg_check: yes
+     name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+     state: present
+
+- name: POSTGRESQL | Change Enable yum-config-manager
+  command: yum-config-manager --enable pgdg12
+  
+- name: POSTGRESQL | Install db packages
+  yum:
+     name: 
+        - postgresql12-server 
+        - postgresql12
+     state: installed
+
+- name: POSTGRESQL | Check if PostgreSQL database is initialized
+  stat:
+    path: "/var/lib/pgsql/12/data/PG_VERSION"
+  register: pgdata_dir_version 
+ 
+- name: POSTGRESQL | Initialize Database
+  command: /usr/pgsql-12/bin/postgresql-12-setup initdb
+  when: not pgdata_dir_version.stat.exists
+  notify:
+    - Restart PostgreSQL
+ 
+- name: POSTGRESQL | Change socket connection pg_hba.conf
+  lineinfile:
+    path: /var/lib/pgsql/12/data/pg_hba.conf
+    regex: "local   all             all                                     (peer|md5)$"
+    line: "local   all             postgres                                     trust"
+    backrefs: yes
+  register: socket_config
+
+- name: POSTGRESQL | Restart PostgreSQL
+  systemd:
+    name: postgresql-12
+    state: restarted
+    enabled: yes
+  when: socket_config.changed
+
+- name: POSTGRESQL | Create zabbix database
+  postgresql_db:
+    name: zabbix
+
+- name: POSTGRESQL | Create zabbix user in PostgreSQL
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_pass }}"
+    role_attr_flags: CREATEDB,NOSUPERUSER
+
+- name: POSTGRESQL | Grant all privileges to user netbox
+  postgresql_privs:
+    db: postgres
+    privs: ALL
+    type: database
+    obj: zabbix
+    role: "{{ db_user }}"
+
+- name: POSTGRESQL | Grant users access to DB using md5 authentication pg_hba.conf
+  template:
+    src: templates/pg_hba.conf.j2
+    dest: /var/lib/pgsql/12/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: '0600'
+  register: grant_config
+    
+- name: POSTGRESQL | Restart PostgreSQL
+  systemd:
+    name: postgresql-12
+    state: restarted
+    enabled: yes
+  when: grant_config.changed

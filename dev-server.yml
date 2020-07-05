@@ -1,0 +1,12 @@
+---
+- name: install default Apache Web Server
+  hosts: DEV
+  become: yes
+
+  tasks:
+  - name: change listen port
+    lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen 9090" line="Listen 8090" state=present
+  
+  - name: Start and enable        
+    service: name=httpd state=restarted enabled=yes
+  
