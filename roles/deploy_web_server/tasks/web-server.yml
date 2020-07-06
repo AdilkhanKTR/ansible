@@ -1,7 +1,5 @@
 ---
 - block: #Block For RedHat
-#  - name: WEB-SERVER | uninstall yum-config
-#    command: yum-config-manager --save --setopt=pgdg13-updates-debuginfo.skip_if_unavailable=true
 
   - name: WEB-SERVER | WEB-Install Apache Web Server for RedHat
     yum: name=httpd state=latest

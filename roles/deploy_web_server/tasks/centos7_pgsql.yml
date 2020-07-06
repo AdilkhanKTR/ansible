@@ -75,3 +75,6 @@
     state: restarted
     enabled: yes
   when: grant_config.changed
+
+- name: Include Zabbix task
+  include: centos7_zbx.yml

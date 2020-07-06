@@ -5,4 +5,3 @@
 
   roles:
     - { role:  deploy_web_server, when: ansible_system == 'Linux' }
-

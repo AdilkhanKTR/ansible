@@ -1,0 +1,47 @@
+--- 
+- name: BASIC | Install epel-release
+  yum:
+     name: "{{ packages }}"
+     state: present
+  vars:
+     packages:
+       - epel-release
+       - yum-utils
+
+- name: BASIC | Install python36 rpm
+  yum:
+    name: https://repo.ius.io/ius-release-el7.rpm
+    state: present
+    update_cache: yes
+    validate_certs: no
+    disable_gpg_check: yes
+  
+- name: BASIC | Install basic packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    disable_gpg_check: yes
+    validate_certs: no
+    update_cache: yes   
+  vars:
+    packages:
+      - gcc
+      - python36u
+      - python36u-devel
+      - python36u-setuptools 
+      - python36u-pip
+      - libxml2-devel
+      - libxslt-devel
+      - libffi-devel
+      - graphviz
+      - openssl-devel
+      - redhat-rpm-config
+      - redis
+      - python-psycopg2
+
+- name: WEB-SERVER | WEB-Install Apache Web Server for RedHat
+  yum: name=httpd state=latest
+- name: WEB-SERVER | Start Web server and enable for Redhat
+  service: name=httpd state=started enabled=yes
+- name: Include PostgreSQL task
+  include: centos7_pgsql.yml
