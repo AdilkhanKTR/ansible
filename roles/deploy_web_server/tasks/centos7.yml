@@ -45,9 +45,25 @@
 - name: BASIC | Disable selinux after reboot
   template: src=selinux.j2 dest={{ selinux_dir }}/config mode=0644
 
+- name: FIREWALL | Open ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  notify: Restart Firewalld
+  ignore_errors: yes
+  loop:
+    - 80/tcp
+    - 443/tcp
+    - 10050/tcp
+    - 10051/tcp
+
 - name: WEB-SERVER | WEB-Install Apache Web Server for RedHat
   yum: name=httpd state=latest
+
 - name: WEB-SERVER | Start Web server and enable for Redhat
   service: name=httpd state=started enabled=yes
+  notify: Restart Apache
+
 - name: Include PostgreSQL task
   include: centos7_pgsql.yml

@@ -48,16 +48,3 @@
 
 - name: ZABBIX 5.0 | Restart all Packages
   command: systemctl restart zabbix-server zabbix-agent httpd rh-php72-php-fpm
-
-- name: FIREWALL | Open ports
-  firewalld:
-    service: "{{ item }}"
-    permanent: yes
-    state: enabled
-  notify: Restart Firewalld
-  ignore_errors: yes
-  loop:
-    - https
-    - http
-    - zabbix-agent
-    - zabbix-server
