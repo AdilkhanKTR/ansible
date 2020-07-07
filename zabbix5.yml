@@ -1,6 +1,6 @@
 ---
 - name: Install zabbix5.0
-  hosts: "{{ myhosts }}"
+  hosts: zabbix #"{{ myhosts }}"
   become: yes
 
   roles:
