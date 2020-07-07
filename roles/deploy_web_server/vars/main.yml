@@ -7,3 +7,4 @@ dst_dir: /var/www/html
 zabbix_repo_folder: /etc/yum.repos.d/
 php_timezone: /etc/opt/rh/rh-php72/php-fpm.d/
 zabbix_server_folder: /etc/zabbix/
+selinux_dir: /etc/selinux/
