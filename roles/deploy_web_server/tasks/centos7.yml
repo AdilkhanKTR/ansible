@@ -39,6 +39,12 @@
       - redis
       - python-psycopg2
 
+- name: BASIC | Disable Selinux
+  command: setenforce 0
+
+- name: BASIC | Disable selinux after reboot
+  template: src=selinux.j2 dest={{ selinux_dir }}/config mode=0644
+
 - name: WEB-SERVER | WEB-Install Apache Web Server for RedHat
   yum: name=httpd state=latest
 - name: WEB-SERVER | Start Web server and enable for Redhat
