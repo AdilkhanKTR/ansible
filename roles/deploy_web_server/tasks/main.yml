@@ -3,6 +3,6 @@
     include: centos7.yml
     when: ansible_distribution == 'CentOS'
   
-  - name: Include Ubuntu20 Zabbix5 Installation proccess
-    include: ubuntu20.yml
-    when: ansible_distribution == 'Ubuntu'
+#  - name: Include Ubuntu20 Zabbix5 Installation proccess
+#    include: ubuntu20.yml
+#    when: ansible_distribution == 'Ubuntu'
